@@ -35,7 +35,7 @@ if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
 # Modeli tanımla (eski model: gemini-1.5-pro)
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=API_KEY)
+llm = ChatGoogleGenerativeAI(model="gemini-2.0", google_api_key=API_KEY)
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
