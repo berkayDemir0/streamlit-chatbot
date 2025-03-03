@@ -38,7 +38,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Başlık
-st.markdown('<div class="intro-text">Yapay Zeka Asistanınıza Hoş Geldiniz</div>', unsafe_allow_html=True)
+st.markdown('<div class="intro-text">YMSYAPI Asistanınıza Hoş Geldiniz</div>', unsafe_allow_html=True)
 
 # Sohbet geçmişi
 if 'chat_history' not in st.session_state:
