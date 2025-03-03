@@ -4,6 +4,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+import time
 
 # Ortam değişkenlerini yükle
 load_dotenv()
@@ -34,8 +35,13 @@ st.markdown('<div class="intro-text">Merhaba, ben yapay zeka asistanınız. Size
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-# Modeli tanımla (eski model: gemini-1.5-pro)
-llm = ChatGoogleGenerativeAI(model="gemini-2.0", google_api_key=API_KEY)
+# Modeli tanımla (Gemini 2.0 Flash deneysel)
+try:
+    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-exp-001", google_api_key=API_KEY)
+except Exception as e:
+    st.error(f"Model yüklenirken hata: {e}")
+    st.stop()
+
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
@@ -49,7 +55,7 @@ for message in st.session_state.chat_history:
             unsafe_allow_html=True
         )
 
-# Mesaj giriş formu (Enter veya butonla gönderim)
+# Mesaj giriş formu
 with st.form(key="chat_form", clear_on_submit=True):
     input_text = st.text_input("Mesaj yaz", placeholder="Sorunuzu buraya yazın...")
     submit_button = st.form_submit_button("Gönder")
