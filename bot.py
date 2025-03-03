@@ -20,7 +20,7 @@ st.title("deneme")
 input_text=st.text_input("sohbet et")
 
 # Hugging Face Inference API ile Mistral-7B (Düzeltildi)
-API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-7B-Instruct-v0.1"  # Doğru model adı
+API_URL = "https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3"  # Doğru model adı
 headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
 
 def query_huggingface(question):
