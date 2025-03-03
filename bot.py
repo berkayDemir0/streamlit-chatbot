@@ -35,15 +35,16 @@ chain = prompt | llm | output_parser
 input_text = st.text_input("sohbet et", value=st.session_state.current_input, key="input")
 
 # Anlık yazılanı geçici olarak göster
-if input_text and input_text != st.session_state.current_input:
+if input_text != st.session_state.current_input:
     st.session_state.current_input = input_text
-    # Geçici mesajı göstermek için bir kopya geçmiş oluştur
-    temp_history = st.session_state.chat_history + [f"Sen: {input_text}"]
-else:
-    temp_history = st.session_state.chat_history
+
+# Geçici mesajı ve geçmişi birleştir
+temp_history = st.session_state.chat_history.copy()
+if st.session_state.current_input:
+    temp_history.append(f"Sen: {st.session_state.current_input}")
 
 # Enter veya Gönder ile mesajı kaydet
-if st.button("Gönder") or (input_text and st.session_state.current_input and "\n" in st.session_state.current_input):
+if st.button("Gönder") or (input_text and "\n" in input_text):
     st.session_state.chat_history.append(f"Sen: {input_text.strip()}")
     response = chain.invoke({"question": input_text.strip()})[:50]
     st.session_state.chat_history.append(f"Bot: {response}")
@@ -51,7 +52,7 @@ if st.button("Gönder") or (input_text and st.session_state.current_input and "\
     temp_history = st.session_state.chat_history
 
 # Sohbet geçmişini ve geçici mesajı göster
-for i, message in enumerate(temp_history):
+for message in temp_history:
     if message.startswith("Sen:"):
         st.markdown(f'<div class="user-message">{message}</div>', unsafe_allow_html=True)
     else:

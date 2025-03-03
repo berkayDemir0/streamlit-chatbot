@@ -1,83 +1,59 @@
-/* Streamlit’in ekstra öğelerini gizle */
-[data-testid="stToolbar"],
-[data-testid="stHeader"],
-[data-testid="stDecoration"] {
-    display: none !important;
-}
+import os
+import streamlit as st
+from langchain_google_genai import ChatGoogleGenerativeAI
+from dotenv import load_dotenv
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
-/* Genel stil */
-.stApp {
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-    font-family: 'Arial', sans-serif;
-}
+load_dotenv()
+API_KEY = os.getenv('GEMINI_API_KEY')
 
-/* Başlık (deneme) */
-h1 {
-    font-size: 24px;
-    color: #333;
-    text-align: center;
-    margin-bottom: 10px;
-    display: none; /* Başlığı gizle */
-}
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "sen bir yapay zeka uzmanısın. otomasyon konusunda danışmanlık vereceksin. chatbot yapabiliyorsun. danışmanlık ücretsiz. chatbot için 10bin istiyorsun. model eğitimi de yapabiliyorsun. verdiğin cevaplar 50 karakteri geçmesin"),
+    ("user", "Question:{question}")
+])
 
-/* Kullanıcı mesajları (hafif koyu gri) */
-.user-message {
-    margin: 10px 0;
-    padding: 8px 12px;
-    border-radius: 10px;
-    max-width: 80%;
-    word-wrap: break-word;
-    background-color: #6c757d; /* Hafif koyu gri */
-    color: white;
-    margin-left: auto;
-}
+# CSS dosyasını oku
+with open("style.css", "r") as css_file:
+    css = css_file.read()
 
-/* Bot mesajları (koyu lacivert) */
-.bot-message {
-    margin: 10px 0;
-    padding: 8px 12px;
-    border-radius: 10px;
-    max-width: 80%;
-    word-wrap: break-word;
-    background-color: #003087; /* Koyu lacivert */
-    color: white;
-    margin-right: auto;
-}
+st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+st.title("deneme")
 
-/* Giriş alanı */
-.stTextInput > div > div > input {
-    width: 100%;
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: white;
-}
+# Session state ile sohbet geçmişini ve geçici girişi tut
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+if 'current_input' not in st.session_state:
+    st.session_state.current_input = ""
 
-/* Gönder butonu */
-.stButton > button {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 20px;
-    padding: 10px 20px;
-}
+# Modeli tanımla
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
+output_parser = StrOutputParser()
+chain = prompt | llm | output_parser
 
-/* Scroll alanı */
-[data-testid="stVerticalBlock"] {
-    overflow-y: auto;
-    max-height: 400px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-[data-testid="stVerticalBlock"]::-webkit-scrollbar {
-    display: none;
-}
+# Kullanıcı girişi
+input_text = st.text_input("sohbet et", value=st.session_state.current_input, key="input")
+
+# Anlık yazılanı geçici olarak göster
+if input_text != st.session_state.current_input:
+    st.session_state.current_input = input_text
+
+# Geçici mesajı ve geçmişi birleştir
+temp_history = st.session_state.chat_history.copy()
+if st.session_state.current_input:
+    temp_history.append(f"Sen: {st.session_state.current_input}")
+
+# Enter veya Gönder ile mesajı kaydet
+if st.button("Gönder") or (input_text and "\n" in input_text):
+    st.session_state.chat_history.append(f"Sen: {input_text.strip()}")
+    response = chain.invoke({"question": input_text.strip()})[:50]
+    st.session_state.chat_history.append(f"Bot: {response}")
+    st.session_state.current_input = ""  # Giriş alanını temizle
+    temp_history = st.session_state.chat_history
+
+# Sohbet geçmişini ve geçici mesajı göster
+for message in temp_history:
+    if message.startswith("Sen:"):
+        st.markdown(f'<div class="user-message">{message}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown(f'<div class="bot-message">{message}</div>', unsafe_allow_html=True)
