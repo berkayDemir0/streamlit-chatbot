@@ -9,11 +9,6 @@ from langchain_core.output_parsers import StrOutputParser
 load_dotenv()
 API_KEY = os.getenv('GEMINI_API_KEY')
 
-# Modeli önbelleğe al (hız için)
-@st.cache_resource
-def get_model():
-    return ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
-
 # Prompt şablonu
 prompt = ChatPromptTemplate.from_messages([
     ("system", "Sen bir yapay zeka uzmanısın. Cevapların 50 karakteri geçmesin."),
@@ -39,8 +34,8 @@ st.markdown('<div class="intro-text">Merhaba, ben yapay zeka asistanınız. Size
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-# Modeli yükle
-llm = get_model()
+# Modeli tanımla (eski model: gemini-1.5-pro)
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
