@@ -4,7 +4,6 @@ from langchain_community.llms import XAI
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
-
 # Ortam değişkenlerini yükle
 load_dotenv()
 XAI_API_KEY = os.getenv('XAI_API_KEY')
