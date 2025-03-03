@@ -9,8 +9,8 @@ from langchain_core.output_parsers import StrOutputParser
 load_dotenv()
 API_KEY = os.getenv('GEMINI_API_KEY')
 
-# Hızlı modeli önbellekle
-@st.cache_data
+# Modeli önbelleğe al (hız için)
+@st.cache_resource
 def get_model():
     return ChatGoogleGenerativeAI(model="gemini-1.0-pro", google_api_key=API_KEY)
 
@@ -20,11 +20,12 @@ prompt = ChatPromptTemplate.from_messages([
     ("user", "Soru: {question}")
 ])
 
-# CSS uygula
+# CSS dosyasını yükle
 with open("style.css", "r") as css_file:
-    st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
+    css = css_file.read()
 
-# Header'ı gizle
+# CSS ve header gizleme
+st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 st.markdown("""
     <style>
     [data-testid="stHeader"] {display: none;}
@@ -53,12 +54,12 @@ for message in st.session_state.chat_history:
             unsafe_allow_html=True
         )
 
-# Mesaj giriş formu
+# Mesaj giriş formu (Enter veya butonla gönderim)
 with st.form(key="chat_form", clear_on_submit=True):
     input_text = st.text_input("Mesaj yaz", placeholder="Sorunuzu buraya yazın...")
     submit_button = st.form_submit_button("Gönder")
 
-    # Enter veya butonla gönder
+    # Enter veya butonla mesaj gönder
     if (submit_button or input_text) and input_text.strip():
         st.session_state.chat_history.append({"role": "user", "content": input_text})
         response = chain.invoke({"question": input_text})[:50]
