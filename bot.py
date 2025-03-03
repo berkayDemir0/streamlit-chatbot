@@ -1,20 +1,13 @@
 import os
 import streamlit as st
-from langchain_xai import ChatXAI  # Doğru import
+from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 # Ortam değişkenlerini yükle
 load_dotenv()
-XAI_API_KEY = os.getenv('XAI_API_KEY')
-
-# API anahtar kontrolü
-if not XAI_API_KEY:
-    st.error("xAI API anahtarı bulunamadı! Lütfen .env dosyasına 'XAI_API_KEY=xai_...' ekleyin.")
-    st.stop()
-else:
-    st.success("xAI API anahtarı başarıyla yüklendi!")
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 # Prompt şablonu
 prompt = ChatPromptTemplate.from_messages([
@@ -34,11 +27,11 @@ st.markdown('<div class="intro-text">Merhaba, ben yapay zeka asistanınız.</div
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-# Grok modelini tanımla
-llm = ChatXAI(
-    model="grok-beta",  # Grok modeli
-    xai_api_key=XAI_API_KEY,
-    max_tokens=50  # 50 karakter sınırı
+# Gemini modelini tanımla
+llm = ChatGoogleGenerativeAI(
+    model="gemini-1.5-pro",
+    google_api_key=GEMINI_API_KEY,
+    max_output_tokens=50  # 50 karakter sınırı
 )
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
