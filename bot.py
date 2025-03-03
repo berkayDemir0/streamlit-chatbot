@@ -1,25 +1,28 @@
 import os
 import streamlit as st
-from langchain_community.llms import HuggingFaceHub
+from langchain_community.llms import XAI
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 # Ortam değişkenlerini yükle
 load_dotenv()
-HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
+XAI_API_KEY = os.getenv('XAI_API_KEY')
 
-if not HUGGINGFACE_API_TOKEN:
-    st.error("Hugging Face API token bulunamadı! Lütfen .env dosyasına 'HUGGINGFACE_API_TOKEN=hf_...' ekleyin.")
+# API anahtar kontrolü
+if not XAI_API_KEY:
+    st.error("xAI API anahtarı bulunamadı! Lütfen .env dosyasına 'XAI_API_KEY=xai_...' ekleyin.")
     st.stop()
 else:
-    st.success("Hugging Face API token başarıyla yüklendi!")
+    st.success("xAI API anahtarı başarıyla yüklendi!")
 
+# Prompt şablonu
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "Sen bir yapay zeka uzmanısın. Cevapların 50 karakteri geçmesin."),
+    ("system", "Sen bir yapay zeka uzmanısın. Cevapların 50 karakteri geçmesin ve Türkçe olsun."),
     ("user", "Soru: {question}")
 ])
 
+# CSS dosyasını yükle
 with open("style.css", "r") as css_file:
     css = css_file.read()
 
@@ -27,17 +30,20 @@ st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 st.markdown("<style>[data-testid='stHeader'] {display: none;}</style>", unsafe_allow_html=True)
 st.markdown('<div class="intro-text">Merhaba, ben yapay zeka asistanınız.</div>', unsafe_allow_html=True)
 
+# Sohbet geçmişini sakla
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-llm = HuggingFaceHub(
-    repo_id="mistralai/Mixtral-7B-Instruct-v0.1",
-    huggingfacehub_api_token=HUGGINGFACE_API_TOKEN,
-    model_kwargs={"max_length": 50}
+# Grok modelini tanımla
+llm = XAI(
+    model="grok",
+    api_key=XAI_API_KEY,
+    max_tokens=50
 )
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
+# Sohbet geçmişini göster
 for message in st.session_state.chat_history:
     if message["role"] == "user":
         st.markdown(f'<div class="user-bubble">{message["content"]}</div>', unsafe_allow_html=True)
@@ -47,6 +53,7 @@ for message in st.session_state.chat_history:
             unsafe_allow_html=True
         )
 
+# Mesaj giriş formu
 with st.form(key="chat_form", clear_on_submit=True):
     input_text = st.text_input("Mesaj yaz", placeholder="Sorunuzu buraya yazın...")
     submit_button = st.form_submit_button("Gönder")
