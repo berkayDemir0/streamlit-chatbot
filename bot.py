@@ -1,9 +1,10 @@
 import os
 import streamlit as st
-from langchain_community.llms import XAI
+from langchain_xai import ChatXAI  # Doğru import
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+
 # Ortam değişkenlerini yükle
 load_dotenv()
 XAI_API_KEY = os.getenv('XAI_API_KEY')
@@ -34,10 +35,10 @@ if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
 # Grok modelini tanımla
-llm = XAI(
-    model="grok",
-    api_key=XAI_API_KEY,
-    max_tokens=50
+llm = ChatXAI(
+    model="grok",  # Grok modeli
+    xai_api_key=XAI_API_KEY,
+    max_tokens=50  # 50 karakter sınırı
 )
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
