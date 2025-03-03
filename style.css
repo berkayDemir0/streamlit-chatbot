@@ -1,0 +1,68 @@
+ /* Genel stil */
+.stApp {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* Hafif gri arka plan */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Başlık (deneme) */
+h1 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Mesajlar */
+[data-testid="stMarkdownContainer"] {
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+/* Kullanıcı mesajları */
+[data-testid="stMarkdownContainer"]:nth-child(odd) {
+    background-color: #007bff; /* Mavi balon */
+    color: white;
+    margin-left: auto; /* Sağda hizala */
+}
+
+/* Bot mesajları */
+[data-testid="stMarkdownContainer"]:nth-child(even) {
+    background-color: #e9ecef; /* Gri balon */
+    color: #333;
+    margin-right: auto; /* Solda hizala */
+}
+
+/* Giriş alanı */
+.stTextInput > div > div > input {
+    width: 100%;
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+/* Giriş alanındaki placeholder */
+.stTextInput > div > div > input::placeholder {
+    color: #888;
+}
+
+/* Scroll çubuğunu gizle ama kaydırmayı etkin bırak */
+[data-testid="stVerticalBlock"] {
+    overflow-y: auto;
+    max-height: 400px; /* Popup’a uygun yükseklik */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE ve Edge */
+}
+[data-testid="stVerticalBlock"]::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}
