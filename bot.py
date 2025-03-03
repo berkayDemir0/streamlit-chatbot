@@ -7,7 +7,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 # Ortam değişkenlerini yükle
 load_dotenv()
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 # Güncellenmiş prompt
 prompt = ChatPromptTemplate.from_messages([
@@ -49,7 +49,7 @@ if 'message_processed' not in st.session_state:
     st.session_state.message_processed = False
 
 # Model ayarları
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=GEMINI_API_KEY, max_output_tokens=100)
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=GOOGLE_API_KEY, max_output_tokens=100)
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
