@@ -10,8 +10,10 @@ load_dotenv()
 HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
 
 if not HUGGINGFACE_API_TOKEN:
-    st.error("Hugging Face API token bulunamadı! .env dosyasını kontrol edin.")
+    st.error("Hugging Face API token bulunamadı! Lütfen .env dosyasına 'HUGGINGFACE_API_TOKEN=hf_...' ekleyin.")
     st.stop()
+else:
+    st.success("Hugging Face API token başarıyla yüklendi!")
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "Sen bir yapay zeka uzmanısın. Cevapların 50 karakteri geçmesin."),
