@@ -5,26 +5,28 @@ from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
+# Ortam değişkenlerini yükle
 load_dotenv()
 API_KEY = os.getenv('GEMINI_API_KEY')
 
+# Prompt şablonu
 prompt = ChatPromptTemplate.from_messages([
     ("system", "sen bir yapay zeka uzmanısın. otomasyon konusunda danışmanlık vereceksin. chatbot yapabiliyorsun. danışmanlık ücretsiz. chatbot için 10bin istiyorsun. model eğitimi de yapabiliyorsun. verdiğin cevaplar 50 karakteri geçmesin"),
     ("user", "Question:{question}")
 ])
 
-# CSS dosyasını oku
+# CSS dosyasını yükle
 with open("style.css", "r") as css_file:
     css = css_file.read()
 
 st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
-st.title("deneme")
+st.title("Deneme Chatbot")
 
-# Session state ile sohbet geçmişini tut
+# Session state ile sohbet geçmişini ve geçici girişi tut
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
-if 'input_key' not in st.session_state:
-    st.session_state.input_key = 0
+if 'current_input' not in st.session_state:
+    st.session_state.current_input = ""
 
 # Modeli tanımla
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
@@ -32,20 +34,22 @@ output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
 # Kullanıcı girişi
-input_text = st.text_input("sohbet et", key=f"input_{st.session_state.input_key}")
+input_text = st.text_input("Sohbet et", value=st.session_state.current_input, key="input")
 
-# Anlık yazılanı geçici olarak göster
-temp_history = st.session_state.chat_history.copy()
-if input_text:
-    temp_history.append(f"Sen: {input_text}")
-
-# Enter veya Gönder ile mesajı kaydet
-if st.button("Gönder") or (input_text and "\n" in input_text):
-    st.session_state.chat_history.append(f"Sen: {input_text.strip()}")
-    response = chain.invoke({"question": input_text.strip()})[:50]
-    st.session_state.chat_history.append(f"Bot: {response}")
-    st.session_state.input_key += 1  # Yeni bir key ile giriş alanını sıfırla
+# Anlık yazılanı takip et
+st.session_state.current_input = input_text
 
 # Sohbet geçmişini ve geçici mesajı göster
-for message in temp_history:
+for message in st.session_state.chat_history:
     st.write(message)
+if st.session_state.current_input:
+    st.write(f"Sen: {st.session_state.current_input}")
+
+# Gönder butonu
+if st.button("Gönder"):
+    if st.session_state.current_input:
+        st.session_state.chat_history.append(f"Sen: {st.session_state.current_input}")
+        response = chain.invoke({"question": st.session_state.current_input})[:50]
+        st.session_state.chat_history.append(f"Bot: {response}")
+        st.session_state.current_input = ""
+        st.rerun()  # Giriş alanını temizlemek için yeniden çalıştır
