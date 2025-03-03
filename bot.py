@@ -36,7 +36,7 @@ if 'chat_history' not in st.session_state:
 
 # Grok modelini tanımla
 llm = ChatXAI(
-    model="grok",  # Grok modeli
+    model="grok-beta",  # Grok modeli
     xai_api_key=XAI_API_KEY,
     max_tokens=50  # 50 karakter sınırı
 )
