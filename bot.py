@@ -1,16 +1,17 @@
 import os
 import streamlit as st
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.llms import HuggingFaceHub
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-# Ortam değişkenlerini yükle
+# Ortam değişkenlerini yükle (Hugging Face API için)
 load_dotenv()
-API_KEY = os.getenv('GEMINI_API_KEY')
+HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
 
-if not API_KEY:
-    st.error("API anahtarı bulunamadı! Lütfen .env dosyasını kontrol edin.")
+# API token kontrolü
+if not HUGGINGFACE_API_TOKEN:
+    st.error("Hugging Face API token bulunamadı! .env dosyasına HUGGINGFACE_API_TOKEN ekleyin.")
     st.stop()
 
 # Prompt şablonu
@@ -38,14 +39,12 @@ st.markdown('<div class="intro-text">Merhaba, ben yapay zeka asistanınız. Size
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-# Modeli tanımla (Gemini 2.0 Flash veya yedek olarak 1.5-pro)
-try:
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-exp-001", google_api_key=API_KEY)
-    st.success("Gemini 2.0 Flash modeli yüklendi!")
-except Exception as e:
-    st.warning(f"Gemini 2.0 yüklenemedi: {e}. Gemini 1.5-pro kullanılıyor.")
-    llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
-
+# Modeli tanımla (Hugging Face Mistral-7B)
+llm = HuggingFaceHub(
+    repo_id="mistralai/Mixtral-7B-Instruct-v0.1",
+    huggingfacehub_api_token=HUGGINGFACE_API_TOKEN,
+    model_kwargs={"max_length": 50}
+)
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
