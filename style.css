@@ -1,69 +1,82 @@
 /* Genel stil */
 .stApp {
-    background-color: #f5f5f5;
+    background-color: #f0f2f6;
     font-family: Arial, sans-serif;
 }
 
 /* Başlık */
 h1 {
-    font-size: 24px;
     color: #333;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-/* Genel mesaj stili */
-[data-testid="stMarkdownContainer"] {
-    margin: 10px 0;
-    padding: 8px 12px;
-    border-radius: 10px;
-    max-width: 80%;
-    word-wrap: break-word;
-    display: inline-block; /* Balon görünümü için */
-}
-
-/* Kullanıcı mesajları (sağda, açık gri) */
-[data-testid="stMarkdownContainer"]:nth-child(odd) {
-    background-color: #d3d3d3;
+/* Kullanıcı baloncuğu (sağda, yeşil tonu, sivri uç) */
+.user-bubble {
+    position: relative;
+    background-color: #dcf8c6;
     color: #333;
-    margin-left: auto; /* Sağa hizalama */
-    text-align: right; /* Metin sağa hizalı */
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin: 10px 0 10px auto;
+    max-width: 70%;
+    display: inline-block;
+}
+.user-bubble::after {
+    content: "";
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 10px solid transparent;
+    border-left-color: #dcf8c6;
 }
 
-/* Bot mesajları (solda, koyu mavi) */
-[data-testid="stMarkdownContainer"]:nth-child(even) {
-    background-color: #000080;
-    color: white;
-    margin-right: auto; /* Sola hizalama */
-    text-align: left; /* Metin sola hizalı */
+/* Bot baloncuğu (solda, gri tonu, sivri uç, logo ile) */
+.bot-bubble {
+    position: relative;
+    background-color: #ffffff;
+    color: #333;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin: 10px auto 10px 0;
+    max-width: 70%;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.bot-bubble::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 10px solid transparent;
+    border-right-color: #ffffff;
+}
+.bot-logo {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
 }
 
 /* Giriş alanı */
 .stTextInput > div > div > input {
-    width: 100%;
+    border-radius: 20px;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: white;
 }
 
 /* Gönder butonu */
 .stButton > button {
-    background-color: #007bff;
+    background-color: #25D366;
     color: white;
     border-radius: 20px;
-    padding: 10px 20px;
-    margin-top: 10px;
+    padding: 8px 20px;
 }
 
-/* Scroll alanı */
+/* Sohbet alanı kaydırma */
 [data-testid="stVerticalBlock"] {
+    max-height: 500px;
     overflow-y: auto;
-    max-height: 400px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-[data-testid="stVerticalBlock"]::-webkit-scrollbar {
-    display: none;
 }

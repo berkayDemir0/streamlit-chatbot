@@ -11,22 +11,21 @@ API_KEY = os.getenv('GEMINI_API_KEY')
 
 # Prompt şablonu
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "sen bir yapay zeka uzmanısın. otomasyon konusunda danışmanlık vereceksin. chatbot yapabiliyorsun. danışmanlık ücretsiz. chatbot için 10bin istiyorsun. model eğitimi de yapabiliyorsun. verdiğin cevaplar 50 karakteri geçmesin"),
-    ("user", "Question:{question}")
+    ("system", "Sen bir yapay zeka uzmanısın. Cevapların 50 karakteri geçmesin."),
+    ("user", "Soru: {question}")
 ])
 
-# CSS dosyasını yükle
+# CSS dosyasını oku
 with open("style.css", "r") as css_file:
     css = css_file.read()
 
+# CSS'i sayfaya ekle
 st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
-st.title("Deneme Chatbot")
+st.title("Chatbot Deneme")
 
-# Session state ile sohbet geçmişini ve geçici girişi tut
+# Sohbet geçmişini sakla
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
-if 'current_input' not in st.session_state:
-    st.session_state.current_input = ""
 
 # Modeli tanımla
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
@@ -34,22 +33,18 @@ output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
 # Kullanıcı girişi
-input_text = st.text_input("Sohbet et", value=st.session_state.current_input, key="input")
+input_text = st.text_input("Mesaj yaz", key="input")
+if input_text and st.button("Gönder"):
+    st.session_state.chat_history.append({"role": "user", "content": input_text})
+    response = chain.invoke({"question": input_text})[:50]
+    st.session_state.chat_history.append({"role": "bot", "content": response})
 
-# Anlık yazılanı takip et
-st.session_state.current_input = input_text
-
-# Sohbet geçmişini ve geçici mesajı göster
+# Sohbet geçmişini göster
 for message in st.session_state.chat_history:
-    st.write(message)
-if st.session_state.current_input:
-    st.write(f"Sen: {st.session_state.current_input}")
-
-# Gönder butonu
-if st.button("Gönder"):
-    if st.session_state.current_input:
-        st.session_state.chat_history.append(f"Sen: {st.session_state.current_input}")
-        response = chain.invoke({"question": st.session_state.current_input})[:50]
-        st.session_state.chat_history.append(f"Bot: {response}")
-        st.session_state.current_input = ""
-        st.rerun()  # Giriş alanını temizlemek için yeniden çalıştır
+    if message["role"] == "user":
+        st.markdown(f'<div class="user-bubble">{message["content"]}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown(
+            f'<div class="bot-bubble"><img src="bot_logo.png" class="bot-logo">{message["content"]}</div>',
+            unsafe_allow_html=True
+        )
