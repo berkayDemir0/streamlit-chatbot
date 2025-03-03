@@ -12,7 +12,7 @@ API_KEY = os.getenv('GEMINI_API_KEY')
 # Modeli önbelleğe al (hız için)
 @st.cache_resource
 def get_model():
-    return ChatGoogleGenerativeAI(model="gemini-2.0-pro", google_api_key=API_KEY)
+    return ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
 
 # Prompt şablonu
 prompt = ChatPromptTemplate.from_messages([
