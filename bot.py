@@ -32,7 +32,7 @@ output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
 # Kullanıcı girişi
-input_text = st.text_input("sohbet et", key="input")
+input_text = st.text_input("sohbet et", value=st.session_state.current_input, key="input")
 
 # Anlık yazılanı geçici olarak göster
 temp_history = st.session_state.chat_history.copy()
@@ -44,9 +44,7 @@ if st.button("Gönder") or (input_text and "\n" in input_text):
     st.session_state.chat_history.append(f"Sen: {input_text.strip()}")
     response = chain.invoke({"question": input_text.strip()})[:50]
     st.session_state.chat_history.append(f"Bot: {response}")
-    # Giriş alanını temizlemek için tekrar render et
-    st.session_state.current_input = ""
-    st.experimental_rerun()  # Giriş alanını temizler
+    st.session_state.current_input = ""  # Giriş alanını temizle
 
 # Sohbet geçmişini ve geçici mesajı göster
 for message in temp_history:
