@@ -1,56 +1,38 @@
-.stApp {
+body {
     background-color: #f0f2f6;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 .intro-text {
     text-align: center;
-    font-size: 18px;
-    color: #555;
+    font-size: 20px;
+    color: #333;
     margin-bottom: 20px;
+    font-weight: bold;
 }
+
 .user-bubble {
     background-color: #dcf8c6;
     color: #333;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 20px 20px 0 20px;
     margin: 10px 0 10px auto;
     max-width: 70%;
     display: inline-block;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
-.user-bubble::after {
-    content: "";
-    position: absolute;
-    right: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 10px solid transparent;
-    border-left-color: #dcf8c6;
-}
+
 .bot-bubble {
     background-color: #ffffff;
     color: #333;
     padding: 12px 16px;
-    border-radius: 10px;
+    border-radius: 20px 20px 20px 0;
     margin: 10px auto 10px 0;
     max-width: 70%;
-    display: flex;
-    align-items: center;
+    display: inline-block;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
-.bot-bubble::before {
-    content: "";
-    position: absolute;
-    left: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 10px solid transparent;
-    border-right-color: #ffffff;
-}
-.bot-logo {
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
-}
+
 .stForm {
     position: fixed;
     bottom: 0;
@@ -58,21 +40,40 @@
     width: 100%;
     background-color: #f0f2f6;
     padding: 10px;
-    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 .stTextInput > div > div > input {
-    width: 70%;
+    width: 60%;
     border-radius: 20px;
-    padding: 10px;
+    padding: 12px;
     border: 1px solid #ccc;
     margin-right: 10px;
+    font-size: 16px;
 }
+
 .stButton > button {
     background-color: #25D366;
     color: white;
-    border-radius: 20px;
-    padding: 10px 20px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
+.stButton > button::before {
+    content: '➤';
+    transform: rotate(-45deg);
+}
+
 [data-testid="stVerticalBlock"] {
     max-height: calc(100vh - 150px);
     overflow-y: auto;
