@@ -13,11 +13,18 @@ prompt = ChatPromptTemplate.from_messages([
     ("user", "Question:{question}")
 ])
 
-st.title("YMSYAPI")
+# CSS dosyasını oku
+with open("style.css", "r") as css_file:
+    css = css_file.read()
+
+st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+st.title("deneme")
 
 # Session state ile sohbet geçmişini tut
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
+if 'current_input' not in st.session_state:
+    st.session_state.current_input = ""
 
 # Modeli tanımla
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
@@ -25,16 +32,18 @@ output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
 # Kullanıcı girişi
-input_text = st.text_input("sohbet et")
+input_text = st.text_input("sohbet et", value=st.session_state.current_input, key="input")
 
-with open("style.css", "r") as css_file:
-    css = css_file.read()
-st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
-# Sohbet geçmişini göster ve yeni mesaj ekle
-if input_text:
-    st.session_state.chat_history.append(f"Sen: {input_text}")
-    response = chain.invoke({"question": input_text})[:50]
+# Anlık girişi kontrol et ve Enter ile gönder
+if input_text != st.session_state.current_input:
+    st.session_state.current_input = input_text
+
+if st.button("Gönder") or (input_text and st.session_state.current_input and st.session_state.current_input[-1] == "\n"):
+    st.session_state.chat_history.append(f"Sen: {input_text.strip()}")
+    response = chain.invoke({"question": input_text.strip()})[:50]
     st.session_state.chat_history.append(f"Bot: {response}")
+    st.session_state.current_input = ""  # Giriş alanını temizle
 
+# Sohbet geçmişini göster
 for message in st.session_state.chat_history:
     st.write(message)
