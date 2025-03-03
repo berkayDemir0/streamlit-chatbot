@@ -1,7 +1,6 @@
 import os
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
-
 from dotenv import load_dotenv
 from langchain import requests
 from langchain_core.prompts import ChatPromptTemplate
@@ -30,8 +29,6 @@ chain=prompt|llm|output_parsers
 if input_text:
   st.write(chain.invoke({"question":input_text}))
 
-# CSS dosyasını yükle
-with open("style.css", "r") as css_file:
-    css = css_file.read()
+
 
 
