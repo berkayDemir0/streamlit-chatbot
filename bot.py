@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
 
-prompt = ChatPromptTemplate.from_messages(
+prompt_template = ChatPromptTemplate.from_messages(
     [
         ("system", "sen bir yapay zeka uzmanısın. otomasyon konusunda danışmanlık vereceksin. chatbot yapabiliyorsun. danışmanlık ücretsiz. chatbot için 10bin istiyorsun. model eğitimi de yapabiliyorsun. verdiğin cevaplar 50 karakteri geçmesin"),
         ("user", "Question:{question}")
@@ -19,7 +19,7 @@ prompt = ChatPromptTemplate.from_messages(
 st.title("deneme")
 input_text = st.text_input("sohbet et")
 
-# Hugging Face Inference API ile Mistral-7B (Düzeltildi)
+# Hugging Face Inference API ile Mistral-7B
 API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
 headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
 
@@ -35,7 +35,8 @@ def query_huggingface(question):
         return f"Hata: {response.status_code}, {response.text}"
 
 output_parser = StrOutputParser()
-chain = prompt | query_huggingface | output_parser
 
 if input_text:
-    st.write(chain.invoke({"question": input_text}))
+    formatted_prompt = prompt_template.format(question=input_text)  # ChatPromptTemplate kullanımı
+    response_text = query_huggingface(formatted_prompt)  # String olarak API'ye gönder
+    st.write(output_parser.parse(response_text))  # Çıktıyı formatla
