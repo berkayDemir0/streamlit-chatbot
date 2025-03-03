@@ -17,10 +17,10 @@ prompt=ChatPromptTemplate.from_messages(
     ]
 )
 
-st.title("deneme")
+st.title("YMSYAPI")
 input_text=st.text_input("sohbet et")
-# Modeli "gemini-pro" yerine "gemini-1.5-pro" olarak değiştirdik
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", google_api_key=API_KEY)
+# Modeli "gemini-pro" yerine "gemini-pro" olarak değiştirdik
+llm = ChatGoogleGenerativeAI(model="gemini-2.0", google_api_key=API_KEY)
 
 
 output_parsers=StrOutputParser()
