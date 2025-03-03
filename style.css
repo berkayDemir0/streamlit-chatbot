@@ -20,27 +20,28 @@ h1 {
     color: #333;
     text-align: center;
     margin-bottom: 10px;
-    display: none; /* Başlığı gizle, gerekirse aç */
+    display: none; /* Başlığı gizle */
 }
 
-/* Mesajlar */
-[data-testid="stMarkdownContainer"] {
+/* Kullanıcı mesajları (hafif koyu gri) */
+.user-message {
     margin: 10px 0;
     padding: 8px 12px;
     border-radius: 10px;
     max-width: 80%;
     word-wrap: break-word;
-}
-
-/* Kullanıcı mesajları (hafif koyu gri) */
-[data-testid="stMarkdownContainer"]:nth-child(odd) {
     background-color: #6c757d; /* Hafif koyu gri */
     color: white;
     margin-left: auto;
 }
 
 /* Bot mesajları (koyu lacivert) */
-[data-testid="stMarkdownContainer"]:nth-child(even) {
+.bot-message {
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
     background-color: #003087; /* Koyu lacivert */
     color: white;
     margin-right: auto;
