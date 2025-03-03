@@ -12,27 +12,30 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* Mesajlar */
+/* Genel mesaj stili */
 [data-testid="stMarkdownContainer"] {
     margin: 10px 0;
     padding: 8px 12px;
     border-radius: 10px;
     max-width: 80%;
     word-wrap: break-word;
+    display: inline-block; /* Balon görünümü için */
 }
 
-/* Kullanıcı mesajları (açık gri) */
+/* Kullanıcı mesajları (sağda, açık gri) */
 [data-testid="stMarkdownContainer"]:nth-child(odd) {
     background-color: #d3d3d3;
     color: #333;
-    margin-left: auto;
+    margin-left: auto; /* Sağa hizalama */
+    text-align: right; /* Metin sağa hizalı */
 }
 
-/* Bot mesajları (koyu mavi) */
+/* Bot mesajları (solda, koyu mavi) */
 [data-testid="stMarkdownContainer"]:nth-child(even) {
     background-color: #000080;
     color: white;
-    margin-right: auto;
+    margin-right: auto; /* Sola hizalama */
+    text-align: left; /* Metin sola hizalı */
 }
 
 /* Giriş alanı */
