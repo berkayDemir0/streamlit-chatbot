@@ -32,28 +32,22 @@ output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 
 # Kullanıcı girişi
-input_text = st.text_input("sohbet et", value=st.session_state.current_input, key="input")
+input_text = st.text_input("sohbet et", key="input")
 
 # Anlık yazılanı geçici olarak göster
-if input_text != st.session_state.current_input:
-    st.session_state.current_input = input_text
-
-# Geçici mesajı ve geçmişi birleştir
 temp_history = st.session_state.chat_history.copy()
-if st.session_state.current_input:
-    temp_history.append(f"Sen: {st.session_state.current_input}")
+if input_text:
+    temp_history.append(f"Sen: {input_text}")
 
 # Enter veya Gönder ile mesajı kaydet
 if st.button("Gönder") or (input_text and "\n" in input_text):
     st.session_state.chat_history.append(f"Sen: {input_text.strip()}")
     response = chain.invoke({"question": input_text.strip()})[:50]
     st.session_state.chat_history.append(f"Bot: {response}")
-    st.session_state.current_input = ""  # Giriş alanını temizle
-    temp_history = st.session_state.chat_history
+    # Giriş alanını temizlemek için tekrar render et
+    st.session_state.current_input = ""
+    st.experimental_rerun()  # Giriş alanını temizler
 
 # Sohbet geçmişini ve geçici mesajı göster
 for message in temp_history:
-    if message.startswith("Sen:"):
-        st.markdown(f'<div class="user-message">{message}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="bot-message">{message}</div>', unsafe_allow_html=True)
+    st.write(message)
