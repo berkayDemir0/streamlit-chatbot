@@ -4,16 +4,16 @@
     font-family: Arial, sans-serif;
 }
 
-/* Başlık */
-h1 {
-    color: #333;
+/* Giriş cümlesi */
+.intro-text {
     text-align: center;
+    font-size: 18px;
+    color: #555;
     margin-bottom: 20px;
 }
 
-/* Kullanıcı baloncuğu (sağda, yeşil tonu, sivri uç) */
+/* Kullanıcı baloncuğu */
 .user-bubble {
-    position: relative;
     background-color: #dcf8c6;
     color: #333;
     padding: 12px 16px;
@@ -32,9 +32,8 @@ h1 {
     border-left-color: #dcf8c6;
 }
 
-/* Bot baloncuğu (solda, gri tonu, sivri uç, logo ile) */
+/* Bot baloncuğu */
 .bot-bubble {
-    position: relative;
     background-color: #ffffff;
     color: #333;
     padding: 12px 16px;
@@ -60,23 +59,33 @@ h1 {
     margin-right: 10px;
 }
 
-/* Giriş alanı */
+/* Giriş alanı sabit */
+.input-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f0f2f6;
+    padding: 10px;
+    z-index: 1000;
+}
 .stTextInput > div > div > input {
+    width: 70%;
     border-radius: 20px;
     padding: 10px;
     border: 1px solid #ccc;
+    margin-right: 10px;
 }
-
-/* Gönder butonu */
 .stButton > button {
     background-color: #25D366;
     color: white;
     border-radius: 20px;
-    padding: 8px 20px;
+    padding: 10px 20px;
 }
 
 /* Sohbet alanı kaydırma */
 [data-testid="stVerticalBlock"] {
-    max-height: 500px;
+    max-height: calc(100vh - 150px);
     overflow-y: auto;
+    padding-bottom: 80px;
 }
